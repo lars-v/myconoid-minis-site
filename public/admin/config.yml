@@ -1,0 +1,122 @@
+local_backend: true
+
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/minis"
+public_folder: "/images/minis"
+
+collections:
+  - name: "miniatures"
+    label: "Miniatures"
+    folder: "src/content/miniatures"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - label: "Name"
+        name: "title"
+        widget: "string"
+      - label: "Description"
+        name: "description"
+        widget: "text"
+      - label: "Faction/Army"
+        name: "faction"
+        widget: "string"
+      - label: "Scale"
+        name: "scale"
+        widget: "select"
+        options: ["28mm", "32mm", "54mm", "75mm", "Other"]
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options: ["Painted", "In Progress", "Primed", "Assembled", "On Sprue"]
+      - label: "Main Photo"
+        name: "image"
+        widget: "image"
+      - label: "Additional Photos"
+        name: "gallery"
+        widget: "list"
+        required: false
+        fields:
+          - label: "Photo"
+            name: "image"
+            widget: "image"
+      - label: "For Sale"
+        name: "forSale"
+        widget: "boolean"
+        default: false
+      - label: "Price"
+        name: "price"
+        widget: "number"
+        required: false
+      - label: "Featured Artwork"
+        name: "featured"
+        widget: "boolean"
+        default: false
+      - label: "Techniques Used"
+        name: "techniques"
+        widget: "list"
+        required: false
+      - label: "Paint Scheme"
+        name: "paintScheme"
+        widget: "text"
+        required: false
+
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Homepage"
+        name: "homepage"
+        file: "src/content/pages/homepage.json"
+        fields:
+          - label: "Hero Title"
+            name: "heroTitle"
+            widget: "string"
+            default: "Grim Baddies for Old School Gaming"
+          - label: "Hero Subtitle"
+            name: "heroSubtitle"
+            widget: "text"
+            default: "Bold black & white miniatures inspired by OSR artwork. Gaming pieces, not shelf queens."
+          - label: "Hero Image"
+            name: "heroImage"
+            widget: "image"
+            required: false
+          - label: "Hero Image Caption"
+            name: "heroImageCaption"
+            widget: "string"
+            required: false
+          - label: "OSR Section Title"
+            name: "osrTitle"
+            widget: "string"
+            default: "The OSR Aesthetic"
+          - label: "OSR Section Subtitle"
+            name: "osrSubtitle"
+            widget: "string"
+            default: "Bold & Simple, Just Like OSR Art"
+          - label: "OSR Description"
+            name: "osrDescription"
+            widget: "markdown"
+          - label: "Featured Section Title"
+            name: "featuredTitle"
+            widget: "string"
+            default: "Recent Terrors"
+          - label: "Featured Section Subtitle"
+            name: "featuredSubtitle"
+            widget: "string"
+            default: "Fresh from the painting table, ready to haunt your campaigns"
+          - label: "CTA Title"
+            name: "ctaTitle"
+            widget: "string"
+            default: "Ready to Terrify Your Players?"
+          - label: "CTA Description"
+            name: "ctaDescription"
+            widget: "text"
+          - label: "Primary Button Text"
+            name: "primaryButtonText"
+            widget: "string"
+            default: "Commission Your Monsters"
+          - label: "Secondary Button Text"
+            name: "secondaryButtonText"
+            widget: "string"
+            default: "Follow the Process"

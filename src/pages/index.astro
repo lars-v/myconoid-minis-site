@@ -1,51 +1,248 @@
 ---
-import { featuredArticles, featuredProjects } from "../lib/featured";
-import { GLOBAL } from "../lib/variables";
 import Layout from "../layouts/Layout.astro";
-import Hero from "../components/home/Hero.astro";
 import Section from "../components/common/Section.astro";
-import FeaturedProjects from "../components/home/FeaturedProjects.astro";
-import FeaturedArticles from "../components/home/FeaturedArticles.astro";
+import { getCollection } from 'astro:content';
+
+// Get miniatures
+const miniatures = await getCollection('miniatures');
+const featuredMinis = miniatures.filter(mini => mini.data.featured === true).slice(0, 3);
+const recentMinis = miniatures.slice(0, 3);
+const displayMinis = featuredMinis.length > 0 ? featuredMinis : recentMinis;
+
+// Get homepage content - with error handling
+let homepage;
+try {
+  const homepageData = await import('../content/pages/homepage.json');
+  homepage = homepageData.default;
+} catch (error) {
+  // Fallback content if file doesn't exist
+  homepage = {
+    heroTitle: "Grim Baddies for Old School Gaming",
+    heroSubtitle: "Bold black & white miniatures inspired by OSR artwork. Gaming pieces, not shelf queens.",
+    heroImage: "/images/minis/hero-monster.jpg",
+    heroImageCaption: "Ready to terrorize your players",
+    osrTitle: "The OSR Aesthetic",
+    osrSubtitle: "Bold & Simple, Just Like OSR Art",
+    osrDescription: "You instantly know OSR-style artwork by its bold black and white \"color\" scheme. My minis take this into 3 dimensions with matte black priming and simple dry brushing to bring details out.",
+    featuredTitle: "Recent Terrors",
+    featuredSubtitle: "Fresh from the painting table, ready to haunt your campaigns",
+    ctaTitle: "Ready to Terrify Your Players?",
+    ctaDescription: "Whether you need a single boss monster or an entire dungeon's worth of baddies, let's bring your campaign to life with proper OSR-style miniatures.",
+    primaryButtonText: "Commission Your Monsters",
+    secondaryButtonText: "Follow the Process"
+  };
+}
 ---
 
 <Layout>
   <Fragment slot="head">
-    <title>{GLOBAL.username} • {GLOBAL.shortDescription}</title>
-    <meta
-      name="description"
-      content={GLOBAL.longDescription}
-    />
-    <meta
-      property="og:title"
-      content={`${GLOBAL.username} • ${GLOBAL.shortDescription}`}
-    />
-    <meta
-      property="og:description"
-      content={GLOBAL.longDescription}
-    />
-    <meta property="og:image" content={`${GLOBAL.rootUrl}/zaggonaut.png`} /> 
-    <meta property="og:url" content={GLOBAL.rootUrl} />
+    <title>Myconoid Minis • {homepage.heroTitle}</title>
+    <meta name="description" content={homepage.heroSubtitle} />
+    <meta property="og:title" content={`Myconoid Minis • ${homepage.heroTitle}`} />
+    <meta property="og:description" content={homepage.heroSubtitle} />
+    <meta property="og:image" content={homepage.heroImage} />
+    <meta property="og:url" content="/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content={`${GLOBAL.username} • ${GLOBAL.shortDescription}`}
-    />
-    <meta
-      name="twitter:description"
-      content={GLOBAL.longDescription}
-    />
-    <meta name="twitter:image" content={`${GLOBAL.rootUrl}/zaggonaut.png`} />
+    <meta name="twitter:title" content={`Myconoid Minis • ${homepage.heroTitle}`} />
+    <meta name="twitter:description" content={homepage.heroSubtitle} />
+    <meta name="twitter:image" content={homepage.heroImage} />
     <meta http-equiv="content-language" content="en" />
     <meta name="language" content="English" />
-    <link rel="canonical" href={GLOBAL.rootUrl} />
+    <link rel="canonical" href="/" />
   </Fragment>
+
+  <!-- Hero Section -->
   <Section class="my-16">
-    <Hero />
+    <div class="text-center max-w-4xl mx-auto">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 text-gray-900 dark:text-white">
+        {homepage.heroTitle.includes(' for ') ? (
+          <>
+            {homepage.heroTitle.split(' for ')[0]} for <br />
+            <span class="text-red-600 dark:text-red-400">{homepage.heroTitle.split(' for ')[1]}</span>
+          </>
+        ) : (
+          homepage.heroTitle
+        )}
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+        {homepage.heroSubtitle}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <a 
+          href="/gallery" 
+          class="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-semibold hover:bg-gray-700 dark:hover:bg-gray-200 transition-colors"
+        >
+          Browse the Bestiary
+        </a>
+        <a 
+          href="/contact" 
+          class="px-8 py-4 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900 transition-colors"
+        >
+          Commission a Baddie
+        </a>
+      </div>
+      
+      {homepage.heroImage && (
+        <div class="max-w-md mx-auto">
+          <img 
+            src={homepage.heroImage} 
+            alt="Grim OSR-style painted miniature" 
+            class="w-full rounded-lg shadow-2xl"
+            style="filter: contrast(1.1) brightness(0.95);"
+          />
+          {homepage.heroImageCaption && (
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">{homepage.heroImageCaption}</p>
+          )}
+        </div>
+      )}
+    </div>
   </Section>
+
+  <!-- The OSR Aesthetic -->
   <Section>
-    <FeaturedProjects featuredProjects={featuredProjects} />
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">{homepage.osrTitle}</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h3 class="text-2xl font-semibold mb-6">{homepage.osrSubtitle}</h3>
+          <div class="space-y-4 text-gray-700 dark:text-gray-300">
+            <div set:html={homepage.osrDescription.replace(/\n\n/g, '</p><p>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/^/, '<p>').replace(/$/, '</p>')} />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="text-center">
+            <div class="bg-black rounded-lg p-8 mb-4">
+              <div class="w-16 h-16 bg-gray-800 rounded mx-auto"></div>
+            </div>
+            <p class="text-sm font-medium">Matte Black Primer</p>
+            <p class="text-xs text-gray-500">Clean foundation</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-gray-300 to-gray-600 rounded-lg p-8 mb-4">
+              <div class="w-16 h-16 bg-gray-100 rounded mx-auto shadow-lg"></div>
+            </div>
+            <p class="text-sm font-medium">Dry Brush Details</p>
+            <p class="text-xs text-gray-500">Bold highlights</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </Section>
+
+  <!-- Featured Monsters -->
   <Section>
-    <FeaturedArticles featuredArticles={featuredArticles} />
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">{homepage.featuredTitle}</h2>
+        <p class="text-gray-600 dark:text-gray-300">
+          {homepage.featuredSubtitle}
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        {displayMinis.map((mini) => (
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow">
+            <div class="aspect-square overflow-hidden">
+              <img 
+                src={mini.data.image} 
+                alt={mini.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                style="filter: contrast(1.1) brightness(0.9);"
+              />
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold mb-2">{mini.data.title}</h3>
+              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{mini.data.faction}</p>
+              <a 
+                href={`/miniatures/${mini.slug}`}
+                class="text-red-600 dark:text-red-400 font-medium hover:underline"
+              >
+                View Details →
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div class="text-center">
+        <a 
+          href="/gallery" 
+          class="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          View All Monsters
+          <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Why This Approach -->
+  <Section>
+    <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-8 max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-8">Gaming Pieces, Not Shelf Queens</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+        <div>
+          <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Table Ready</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            Bold details that pop during gameplay, not microscopic highlights only visible under a magnifying glass.
+          </p>
+        </div>
+        <div>
+          <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Quick Turnaround</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            Simple, effective techniques mean your monsters are ready for action, not collecting dust on a todo list.
+          </p>
+        </div>
+        <div>
+          <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Authentic OSR</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            Captures the gritty, no-nonsense aesthetic that OSR games are known for.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Call to Action -->
+  <Section>
+    <div class="text-center max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold mb-6">{homepage.ctaTitle}</h2>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+        {homepage.ctaDescription}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a 
+          href="/contact" 
+          class="px-8 py-4 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors"
+        >
+          {homepage.primaryButtonText}
+        </a>
+        <a 
+          href="https://www.instagram.com/myconoid_minis" 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-8 py-4 border-2 border-red-600 text-red-600 rounded-lg font-semibold hover:bg-red-600 hover:text-white transition-colors"
+        >
+          {homepage.secondaryButtonText}
+        </a>
+      </div>
+    </div>
   </Section>
 </Layout>

@@ -1,0 +1,41 @@
+{
+  "heroTitle": "Grim Baddies for Old School Gaming",
+  "heroSubtitle": "Bold black & white miniatures inspired by OSR artwork. Gaming pieces, not shelf queens.",
+  "heroImage": "/images/minis/hero-monster.jpg",
+  "heroImageCaption": "Ready to terrorize your players",
+  "osrSection": {
+    "title": "The OSR Aesthetic",
+    "subtitle": "Bold & Simple, Just Like OSR Art",
+    "description": "You instantly know OSR-style artwork by its bold black and white \"color\" scheme. My minis take this into 3 dimensions with matte black priming and simple dry brushing to bring details out.\n\nNo fancy techniques, no endless highlighting. Just clean, bold details that pop on the gaming table and capture that authentic old-school vibe your campaign deserves.\n\n**You can keep it real and play with them as Crom intended, or slap on some speedpaint to make them fancy.**"
+  },
+  "featuredSection": {
+    "title": "Recent Terrors",
+    "subtitle": "Fresh from the painting table, ready to haunt your campaigns"
+  },
+  "whyChooseSection": {
+    "title": "Gaming Pieces, Not Shelf Queens",
+    "benefits": [
+      {
+        "title": "Table Ready",
+        "description": "Bold details that pop during gameplay, not microscopic highlights only visible under a magnifying glass.",
+        "icon": "table"
+      },
+      {
+        "title": "Quick Turnaround", 
+        "description": "Simple, effective techniques mean your monsters are ready for action, not collecting dust on a todo list.",
+        "icon": "clock"
+      },
+      {
+        "title": "Authentic OSR",
+        "description": "Captures the gritty, no-nonsense aesthetic that OSR games are known for.",
+        "icon": "check"
+      }
+    ]
+  },
+  "ctaSection": {
+    "title": "Ready to Terrify Your Players?",
+    "description": "Whether you need a single boss monster or an entire dungeon's worth of baddies, let's bring your campaign to life with proper OSR-style miniatures.",
+    "primaryButtonText": "Commission Your Monsters",
+    "secondaryButtonText": "Follow the Process"
+  }
+}
