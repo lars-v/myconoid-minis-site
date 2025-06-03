@@ -1,8 +1,7 @@
 local_backend: true
 
 backend:
-  name: github
-  repo: lars-v/myconoid-minis-site
+  name: git-gateway
   branch: main
 
 media_folder: "public/images/uploads"
