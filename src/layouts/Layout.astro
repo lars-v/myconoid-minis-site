@@ -24,18 +24,6 @@ import "../styles/global.css";
       <slot />
     </main>
     <Footer />
-     <script>
-      import('netlify-identity-widget').then(({ default: netlifyIdentity }) => {
-        netlifyIdentity.init();
-        
-        netlifyIdentity.on('init', user => {
-          if (!user) {
-            netlifyIdentity.on('login', () => {
-              document.location.href = '/admin/';
-            });
-          }
-        });
-      });
-    </script>
+    
   </body>
 </html>
