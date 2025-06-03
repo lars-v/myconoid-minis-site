@@ -1,4 +1,4 @@
-![Zaggonaut, a retro-inspired theme for Astro.](./images/README.png)
+![Zaggonaut, a retro-inspired theme for Astro.]
 
 Zaggonaut is a retro-inspired theme for Astro, built using TypeScript, TailwindCSS, and of course, Astro.
 
