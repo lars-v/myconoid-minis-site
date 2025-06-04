@@ -10,7 +10,7 @@ export const GLOBAL = {
   longDescription: "I'm myconoid, and I make little resin bad guys for you to murder!",
   
   // Social media links
-  instagramProfile: "https://www.instagram.com/myconoid_minis",
+  instagramProfile: "https://www.instagram.com/myc_minis",
   
   // Common text names used throughout the site
   articlesName: "Articles",
