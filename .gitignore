@@ -23,4 +23,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# CSV Import Tool (local development only)
+public/csv-import.html
+
+web-scraper.astro
+
 pnpm-lock.yaml

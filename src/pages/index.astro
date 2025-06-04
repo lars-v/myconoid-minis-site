@@ -9,6 +9,11 @@ const featuredMinis = miniatures.filter(mini => mini.data.featured === true).sli
 const recentMinis = miniatures.slice(0, 3);
 const displayMinis = featuredMinis.length > 0 ? featuredMinis : recentMinis;
 
+// Helper function to get first photo
+function getFirstPhoto(mini: any) {
+  return mini.data.photos?.[0]?.image || '/images/placeholder.jpg';
+}
+
 // Get homepage content - with error handling
 let homepage;
 try {
@@ -144,15 +149,20 @@ try {
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow">
             <div class="aspect-square overflow-hidden">
               <img 
-                src={mini.data.image} 
-                alt={mini.data.title}
+                src={getFirstPhoto(mini)} 
+                alt={mini.data.title || 'Miniature'}
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 style="filter: contrast(1.1) brightness(0.9);"
               />
             </div>
             <div class="p-6">
               <h3 class="text-xl font-semibold mb-2">{mini.data.title}</h3>
-              <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{mini.data.faction}</p>
+              {mini.data.designer && (
+                <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">by {mini.data.designer}</p>
+              )}
+              {mini.data.creatureType && (
+                <p class="text-gray-500 text-sm mb-4">{mini.data.creatureType}</p>
+              )}
               <a 
                 href={`/miniatures/${mini.slug}`}
                 class="text-red-600 dark:text-red-400 font-medium hover:underline"

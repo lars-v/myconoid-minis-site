@@ -3,58 +3,368 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
 const miniatures = await getCollection('miniatures');
+
+// Extract unique values for filters
+const allDesigners = new Set<string>();
+const allCreatureTypes = new Set<string>();
+
+miniatures.forEach(mini => {
+  if (mini.data.designer) allDesigners.add(mini.data.designer);
+  if (mini.data.creatureType) allCreatureTypes.add(mini.data.creatureType);
+});
+
+const uniqueDesigners = Array.from(allDesigners).sort();
+const uniqueCreatureTypes = Array.from(allCreatureTypes).sort();
+
+// Helper function to get first photo
+function getFirstPhoto(mini: any) {
+  return mini.data.photos?.[0]?.image || '/images/placeholder.jpg';
+}
+
+// Helper function to check if miniature has any pricing
+function hasAnyPricing(mini: any) {
+  const pricing = mini.data.pricing;
+  if (!pricing) return false;
+  
+  return (pricing.osrPriming?.tabletop || pricing.osrPriming?.display ||
+          pricing.unprimed?.tabletop || pricing.unprimed?.display);
+}
 ---
 
 <Layout title="Miniature Gallery">
   <main class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-8 text-center">Myconoid Minis Gallery</h1>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+        Myconoid Minis Gallery
+      </h1>
+      <p class="text-gray-600 dark:text-gray-300">
+       Functional gaming minis for Grognards
+      </p>
+    </div>
+
+    <!-- Search and Filter Controls -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-12 border dark:border-gray-700">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <!-- Text Search -->
+        <div>
+          <label for="search-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Search Miniatures
+          </label>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search names, descriptions..."
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+
+        <!-- Creature Type Filter -->
+        <div>
+          <label for="creature-type-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Creature Type
+          </label>
+          <select
+            id="creature-type-filter"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+            <option value="">All Types</option>
+            {uniqueCreatureTypes.map(type => (
+              <option value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Designer Filter -->
+        <div>
+          <label for="designer-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Designer
+          </label>
+          <select
+            id="designer-filter"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+            <option value="">All Designers</option>
+            {uniqueDesigners.map(designer => (
+              <option value={designer}>{designer}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Availability Filter -->
+        <div>
+          <label for="availability-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Availability
+          </label>
+          <select
+            id="availability-filter"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          >
+            <option value="">All Items</option>
+            <option value="for-sale">For Sale</option>
+            <option value="not-for-sale">Not For Sale</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-center">
+        <!-- Clear Filters Button -->
+        <button
+          id="clear-filters"
+          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+        >
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Results Counter -->
+      <div class="mt-4 text-center">
+        <span id="results-counter" class="text-sm text-gray-600 dark:text-gray-400">
+          Showing {miniatures.length} miniatures
+        </span>
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div id="no-results" class="hidden text-center py-12">
+      <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-8">
+        <h3 class="text-yellow-800 dark:text-yellow-200 text-xl font-semibold mb-2">No matches found</h3>
+        <p class="text-yellow-700 dark:text-yellow-300">Try adjusting your search terms or filters</p>
+      </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {miniatures.map((mini) => (
-        <a href={`/miniatures/${mini.slug}`} class="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl">
-          
-          <div style="position: relative;">
-            <img 
-              src={mini.data.image} 
-              alt={mini.data.title}
-              style="width: 100%; height: 256px; object-fit: cover; transition: transform 0.3s ease;"
-              onmouseover="this.style.transform='scale(1.1)'"
-              onmouseout="this.style.transform='scale(1)'"
-            />
-          </div>
-          
-          <div class="p-6">
-            <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-              {mini.data.title}
-            </h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-2">{mini.data.faction}</p>
-            <p class="text-sm text-gray-500 mb-3">{mini.data.scale} • {mini.data.status}</p>
-            <p class="text-gray-700 dark:text-gray-200 mb-4">{mini.data.description}</p>
-            
-            {mini.data.forSale && mini.data.price && (
-              <div class="text-green-600 font-semibold text-lg">
-                For Sale: ${mini.data.price}
-              </div>
-            )}
-            
-            {mini.data.gallery && mini.data.gallery.length > 0 && (
-              <div class="mt-3 mb-4 inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                </svg>
-                {mini.data.gallery.length + 1} photos
-              </div>
-            )}
-            
-            <div class="mt-4 text-blue-600 dark:text-blue-400 font-medium flex items-center">
-              View Details
-              <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
+        <article 
+          class="miniature-card block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
+          data-title={mini.data.title?.toLowerCase() || ''}
+          data-description={mini.data.description?.toLowerCase() || ''}
+          data-creature-type={mini.data.creatureType?.toLowerCase() || ''}
+          data-designer={mini.data.designer?.toLowerCase() || ''}
+          data-featured={mini.data.featured ? 'true' : 'false'}
+          data-for-sale={mini.data.forSale ? 'true' : 'false'}
+          data-has-pricing={hasAnyPricing(mini) ? 'true' : 'false'}
+        >
+          <a href={`/miniatures/${mini.slug}`} class="block">
+            <div style="position: relative;">
+              <img
+                src={getFirstPhoto(mini)}
+                alt={mini.data.title || 'Miniature'}
+                style="width: 100%; height: 256px; object-fit: cover; transition: transform 0.3s ease;"
+                onmouseover="this.style.transform='scale(1.1)'"
+                onmouseout="this.style.transform='scale(1)'"
+                loading="lazy"
+              />
+              
+              <!-- Featured Badge -->
+              {mini.data.featured && (
+                <div class="absolute top-2 right-2 bg-yellow-500 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                  FEATURED
+                </div>
+              )}
             </div>
-          </div>
-        </a>
+            
+            <div class="p-6">
+              <!-- Title -->
+              <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+                {mini.data.title || 'Untitled Miniature'}
+              </h3>
+              
+              <!-- Designer -->
+              {mini.data.designer && (
+                <p class="text-gray-600 dark:text-gray-300 mb-2">by {mini.data.designer}</p>
+              )}
+              
+              <!-- Creature Type -->
+              {mini.data.creatureType && (
+                <p class="text-sm text-gray-500 mb-2">{mini.data.creatureType}</p>
+              )}
+              
+              <!-- Scale -->
+              {mini.data.scale && (
+                <p class="text-sm text-gray-500 mb-3">{mini.data.scale}</p>
+              )}
+              
+              <!-- Description -->
+              {mini.data.description && (
+                <p class="text-gray-700 dark:text-gray-200 mb-4">
+                  {mini.data.description.length > 100 
+                    ? mini.data.description.substring(0, 100) + '...'
+                    : mini.data.description
+                  }
+                </p>
+              )}
+              
+              <!-- Pricing Info -->
+              {hasAnyPricing(mini) && (
+                <div class="text-green-600 font-semibold text-sm mb-3">
+                  Starting at ${Math.min(
+                    ...[
+                      mini.data.pricing?.osrPriming?.tabletop,
+                      mini.data.pricing?.osrPriming?.display,
+                      mini.data.pricing?.unprimed?.tabletop,
+                      mini.data.pricing?.unprimed?.display
+                    ].filter(price => price !== undefined && price !== null)
+                  )}
+                </div>
+              )}
+              
+              <!-- Photo Count -->
+              {mini.data.photos && mini.data.photos.length > 0 && (
+                <div class="mt-3 mb-4 inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                  </svg>
+                  {mini.data.photos.length} photos
+                </div>
+              )}
+              
+              <div class="mt-4 text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                View Details
+                <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </article>
       ))}
     </div>
   </main>
 </Layout>
+
+<script>
+  // Search and filter functionality
+  class GalleryFilter {
+    private searchInput: HTMLInputElement;
+    private creatureTypeFilter: HTMLSelectElement;
+    private designerFilter: HTMLSelectElement;
+    private availabilityFilter: HTMLSelectElement;
+    private clearButton: HTMLButtonElement;
+    private galleryGrid: HTMLElement;
+    private resultsCounter: HTMLElement;
+    private noResults: HTMLElement;
+    private cards: NodeListOf<HTMLElement>;
+
+    constructor() {
+      // Get DOM elements
+      this.searchInput = document.getElementById('search-input') as HTMLInputElement;
+      this.creatureTypeFilter = document.getElementById('creature-type-filter') as HTMLSelectElement;
+      this.designerFilter = document.getElementById('designer-filter') as HTMLSelectElement;
+      this.availabilityFilter = document.getElementById('availability-filter') as HTMLSelectElement;
+      this.clearButton = document.getElementById('clear-filters') as HTMLButtonElement;
+      this.galleryGrid = document.getElementById('gallery-grid') as HTMLElement;
+      this.resultsCounter = document.getElementById('results-counter') as HTMLElement;
+      this.noResults = document.getElementById('no-results') as HTMLElement;
+      this.cards = document.querySelectorAll('.miniature-card') as NodeListOf<HTMLElement>;
+
+      this.bindEvents();
+    }
+
+    private bindEvents(): void {
+      // Real-time search and filtering
+      this.searchInput.addEventListener('input', () => this.applyFilters());
+      this.creatureTypeFilter.addEventListener('change', () => this.applyFilters());
+      this.designerFilter.addEventListener('change', () => this.applyFilters());
+      this.availabilityFilter.addEventListener('change', () => this.applyFilters());
+      
+      // Clear all filters
+      this.clearButton.addEventListener('click', () => this.clearFilters());
+    }
+
+    private applyFilters(): void {
+      const searchTerm = this.searchInput.value.toLowerCase().trim();
+      const selectedCreatureType = this.creatureTypeFilter.value.toLowerCase().trim();
+      const selectedDesigner = this.designerFilter.value.toLowerCase().trim();
+      const selectedAvailability = this.availabilityFilter.value.trim();
+      let visibleCount = 0;
+
+      this.cards.forEach(card => {
+        const title = card.dataset.title || '';
+        const description = card.dataset.description || '';
+        const creatureType = card.dataset.creatureType || '';
+        const designer = card.dataset.designer || '';
+        const featured = card.dataset.featured === 'true';
+        const forSale = card.dataset.forSale === 'true';
+        const hasPricing = card.dataset.hasPricing === 'true';
+
+        // Check all filter conditions
+        const textMatch = !searchTerm || 
+          title.includes(searchTerm) || 
+          description.includes(searchTerm);
+
+        const creatureTypeMatch = !selectedCreatureType || creatureType === selectedCreatureType;
+        const designerMatch = !selectedDesigner || designer === selectedDesigner;
+        
+        // Availability filter
+        let availabilityMatch = true;
+        if (selectedAvailability === 'for-sale') {
+          availabilityMatch = forSale && hasPricing;
+        } else if (selectedAvailability === 'featured') {
+          availabilityMatch = featured;
+        } else if (selectedAvailability === 'not-for-sale') {
+          availabilityMatch = !forSale || !hasPricing;
+        }
+
+        // Show card if all conditions are met
+        const shouldShow = textMatch && creatureTypeMatch && designerMatch && availabilityMatch;
+        
+        if (shouldShow) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      this.updateResultsDisplay(visibleCount);
+    }
+
+    private updateResultsDisplay(visibleCount: number): void {
+      // Update counter
+      this.resultsCounter.textContent = `Showing ${visibleCount} miniatures`;
+
+      // Show/hide no results message
+      if (visibleCount === 0) {
+        this.galleryGrid.style.display = 'none';
+        this.noResults.classList.remove('hidden');
+      } else {
+        this.galleryGrid.style.display = 'grid';
+        this.noResults.classList.add('hidden');
+      }
+    }
+
+    private clearFilters(): void {
+      this.searchInput.value = '';
+      this.creatureTypeFilter.value = '';
+      this.designerFilter.value = '';
+      this.availabilityFilter.value = '';
+      this.applyFilters();
+      this.searchInput.focus();
+    }
+  }
+
+  // Initialize the filter system when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    new GalleryFilter();
+  });
+</script>
+
+<style>
+  /* Smooth transitions for card visibility */
+  .miniature-card {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Loading state for images */
+  img[loading="lazy"] {
+    background-color: #e5e7eb; /* gray-200 */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    img[loading="lazy"] {
+      background-color: #374151; /* gray-700 */
+    }
+  }
+</style>

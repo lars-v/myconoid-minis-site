@@ -1,11 +1,11 @@
 local_backend: true
-
 backend:
   name: git-gateway
   branch: main
-
+  squash_merges: true
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
+publish_mode: simple
 
 collections:
   - name: "miniatures"
@@ -13,56 +13,147 @@ collections:
     folder: "src/content/miniatures"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}} - {{creatureType}} - {{designer}}"
+    view_filters:
+      - label: "Featured"
+        field: featured
+        pattern: true
+      - label: "For Sale"
+        field: forSale
+        pattern: true
+    view_groups:
+      - label: "Creature Type"
+        field: creatureType
     fields:
+      # Basic Info
       - label: "Name"
         name: "title"
         widget: "string"
+        required: false
+      
       - label: "Description"
         name: "description"
-        widget: "text"
-      - label: "Faction/Army"
-        name: "faction"
-        widget: "string"
+        widget: "markdown"
+        required: false
+        
       - label: "Scale"
         name: "scale"
         widget: "select"
-        options: ["28mm", "32mm", "54mm", "75mm", "Other"]
-      - label: "Status"
-        name: "status"
+        required: false
+        options: ["32mm", "54mm", "Other"]
+      
+      - label: "Creature Type"
+        name: "creatureType"
         widget: "select"
-        options: ["Painted", "In Progress", "Primed", "Assembled", "On Sprue"]
-      - label: "Main Photo"
-        name: "image"
-        widget: "image"
-      - label: "Additional Photos"
-        name: "gallery"
+        required: false
+        options: 
+          - "Hero"
+          - "Undead"
+          - "Goblinoid"
+          - "Monstrosity"
+          - "Beast"
+          - "Dragon"
+          - "Demon"
+          - "Cultist"
+          - "Construct"
+          - "Elemental"
+          - "Giant"
+          - "Humanoid"
+          - "Aberration"
+          - "Other"
+      
+      # Photos
+      - label: "Photos"
+        name: "photos"
         widget: "list"
         required: false
+        summary: "Photo {{index}}: {{fields.caption}}"
+        view_filters:
+          - label: "Has Caption"
+            field: caption
+            pattern: ".+"
         fields:
-          - label: "Photo"
+          - label: "Image"
             name: "image"
             widget: "image"
+          - label: "Caption"
+            name: "caption"
+            widget: "string"
+            required: false
+            hint: "Optional description for this photo"
+      
+      # Creator Info
+      - label: "Designer"
+        name: "designer"
+        widget: "select"
+        required: false
+        options: 
+          - "Yasashii Kyojin Studio"
+          - "Brite Minis"
+          - "Artisan Guild"
+          - "Clay Cyanide"
+          - "Dragon Trappers Lodge"
+          - "Flesh of Gods"
+          - "Highland Miniatures"
+          - "Loot Studios"
+          - "Medbury Miniatures"
+          - "Mini Monster Mayhem"
+          - "Norkers"
+          - "Punga Miniatures"
+          - "Rocket Pig Games"
+          - "Wargames Atlantic"
+          - "Other"
+      
+      # Simplified Pricing Structure
+      - label: "Pricing"
+        name: "pricing"
+        widget: "object"
+        required: false
+        fields:
+          - label: "OSR Priming Options"
+            name: "osrPriming"
+            widget: "object"
+            required: false
+            fields:
+              - label: "Tabletop Scale"
+                name: "tabletop"
+                widget: "number"
+                required: false
+                step: 0.01
+              - label: "Display Scale (54mm)"
+                name: "display"
+                widget: "number"
+                required: false
+                step: 0.01
+          
+          - label: "Unprimed Options"
+            name: "unprimed"
+            widget: "object"
+            required: false
+            fields:
+              - label: "Tabletop Scale"
+                name: "tabletop"
+                widget: "number"
+                required: false
+                step: 0.01
+              - label: "Display Scale (54mm)"
+                name: "display"
+                widget: "number"
+                required: false
+                step: 0.01
+      
+      # Flags
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        
       - label: "For Sale"
         name: "forSale"
         widget: "boolean"
         default: false
-      - label: "Price"
-        name: "price"
-        widget: "number"
-        required: false
-      - label: "Featured Artwork"
-        name: "featured"
-        widget: "boolean"
-        default: false
-      - label: "Techniques Used"
-        name: "techniques"
-        widget: "list"
-        required: false
-      - label: "Paint Scheme"
-        name: "paintScheme"
-        widget: "text"
-        required: false
 
+  # Pages Configuration (unchanged)
   - name: "pages"
     label: "Pages"
     files:
@@ -77,7 +168,7 @@ collections:
           - label: "Hero Subtitle"
             name: "heroSubtitle"
             widget: "text"
-            default: "Bold black & white miniatures inspired by OSR artwork. Gaming pieces, not shelf queens."
+            default: "Bold black & white miniatures inspired by OSR artwork. Functional Gaming Minis."
           - label: "Hero Image"
             name: "heroImage"
             widget: "image"
