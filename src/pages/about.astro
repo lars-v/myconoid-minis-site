@@ -1,5 +1,41 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Get about page content - with error handling
+let about;
+try {
+  const aboutData = await import('../content/pages/about.json');
+  about = aboutData.default;
+} catch (error) {
+  // Fallback content if file doesn't exist
+  about = {
+    pageTitle: "About the Dragon Guy",
+    profileImage: "/images/minis/IMG_4260.png",
+    profileImageAlt: "Nerd at work",
+    bioTitle: "My Journey",
+    bioContent: "Welcome, traveler! I'm myconoid (aka Lars), and I like making miniature monsters for my tabletop games. What started as a hobby has grown into a pursuit of bringing tiny baddies to life for others!\n\nI specialize in creating grim-looking baddies for old school role-playing (OSR) and other games.\n\nWhen I'm not making your favorite antagonists, you can find me riding motorbikes, digging in the garden and playing with my dog.",
+    approachTitle: "My Approach",
+    approachContent: "I like to keep things simple around here. You instantly know OSR-style artwork by its bold black and white \"color\" scheme. My minis take this into 3 dimensions with matte black priming and simple dry brushing to bring details out.\n\nYou can keep it real and play with them as is (and as Crom intended), or slap on some speedpaint to make them fancy.",
+    toolsTitle: "Tools of the Trade",
+    equipmentList: [
+      { item: "Elegoo Saturn 4 Ultra x2" },
+      { item: "ABS-Like Photopolymer Resin" },
+      { item: "Elegoo Wash and Cure Station" },
+      { item: "Airbrushed polyurethane primer" }
+    ],
+    commissionTitle: "Special Orders",
+    commissionContent: "Need a big skeleton or beastman army for your next funnel? Running a convention 1-shot and want to impress the crowd? I offer bundle deals!\n\n[Get in Touch](/contact) for more info!"
+  };
+}
+
+// Helper function to convert markdown-like content to HTML
+function formatContent(content) {
+  return content
+    .replace(/\n\n/g, '</p><p class="mb-4">')
+    .replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2"><u>$1</u></a>')
+    .replace(/^/, '<p class="mb-4">')
+    .replace(/$/, '</p>');
+}
 ---
 
 <Layout title="About - Myconoid Minis">
@@ -8,17 +44,15 @@ import Layout from '../layouts/Layout.astro';
       
       <!-- Hero Section -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold mb-6">About the Dragon Guy</h1>
+        <h1 class="text-4xl font-bold mb-6">{about.pageTitle}</h1>
         <div class="mb-8">
           <!-- Responsive image -->
           <img 
-            src="/images/minis/IMG_4260.png" 
-            alt="Nerd at work" 
-            class="w-80 h-80 sm:w-64 sm:h-64 md:w-150 md:h-150 mx-auto object-cover shadow-lg rounded-lg"/>
+            src={about.profileImage} 
+            alt={about.profileImageAlt} 
+            class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 mx-auto object-cover shadow-lg rounded-lg"/>
         </div>
       </div>
-
-      <!-- Main Content -->
 
       <!-- Main Content with custom divider -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative">
@@ -28,84 +62,38 @@ import Layout from '../layouts/Layout.astro';
         
         <!-- Bio Section -->
         <div class="lg:pr-12">
-          <h2 class="text-2xl font-semibold mb-6">My Journey</h2>
-          <div class="space-y-4 text-gray-700 dark:text-gray-300">
-            <p>
-              Welcome, traveler! I'm myconoid (aka Lars), and I like making miniature monsters for my tabletop games. What started as a hobby has grown into a pursuit of bringing tiny baddies to life for others!
-            </p>
-            <p>
-              I specialize in creating grim-looking baddies for old school role-playing (OSR) and other games. 
-            </p>
-            <p>
-              When I'm not making your favorite antagonists, you can find me riding motorbikes, digging in the garden and playing with my dog.
-            </p>
-
+          <h2 class="text-2xl font-semibold mb-6">{about.bioTitle}</h2>
+          <div class="space-y-6 text-gray-700 dark:text-gray-300">
+            <div set:html={formatContent(about.bioContent)} />
           </div>
         </div>
 
         <!-- Techniques & Philosophy -->
         <div class="lg:pl-12">
-          <h2 class="text-2xl font-semibold mb-6">My Approach</h2>
-          <div class="space-y-4 text-gray-700 dark:text-gray-300">
-            <p>
-              I like to keep things simple around here. You instantly know OSR-style artwork by its bold black and white "color" scheme. My minis take this into 3 dimensions with matte black priming and simple dry brushing to bring details out. 
-            </p>
-            <p>
-              You can keep it real and play with them as is (and as Crom intended), or slap on some speedpaint to make them fancy.
-            </p>
-             <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+          <h2 class="text-2xl font-semibold mb-6">{about.approachTitle}</h2>
+          <div class="space-y-6 text-gray-700 dark:text-gray-300">
+            <div set:html={formatContent(about.approachContent)} />
+            
+            <!-- Process Steps -->
+            <ul class="space-y-2 text-gray-700 dark:text-gray-300 mt-6">
               <li>• Print with ABS-Like Resin</li>
               <li>• Airbrush polyurethane or acrylic primer</li>
               <li>• Two-part dry brush with grey and white acrylic</li>
-              <li>• Summon the spirts to inhabit them</li>
+              <li>• Summon the spirits to inhabit them</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <!-- Stats/Fun Facts
-      <div class="mt-16 bg-gray-100 dark:bg-gray-800 rounded-lg p-8">
-        <h2 class="text-2xl font-semibold mb-8 text-center">By the Numbers</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
-            <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">150+</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Miniatures Painted</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-green-600 dark:text-green-400">5</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Years Experience</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">20+</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Paint Brands Used</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-orange-600 dark:text-orange-400">∞</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Coffee Cups</div>
-          </div>
-        </div> 
-      </div> -->
-
       <!-- Equipment/Tools -->
       <div class="mt-16">
-        <h2 class="text-2xl font-semibold mb-8">Tools of the Trade</h2>
+        <h2 class="text-2xl font-semibold mb-8">{about.toolsTitle}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-          <!--  <h3 class="text-lg font-medium mb-4">Favorite Paints</h3>
             <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-              <li>• Vallejo Model Color</li>
-              <li>• Citadel Contrast Paints</li>
-              <li>• Army Painter Speedpaints</li>
-              <li>• Scale 75 Artist Range</li>
-            </ul>
-          </div> -->
-          <div>
-            <!-- <h3 class="text-lg font-medium mb-4">Essential Tools</h3>-->
-            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-              <li>• Elegoo Saturn 4 Ultra x2</li>
-              <li>• ABS-Like Photopolymer Resin</li>
-              <li>• Elegoo Wash and Cure Station</li>
-              <li>• Airbrushed polyurethane primer</li>
+              {about.equipmentList.map((equipment) => (
+                <li>• {equipment.item}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -113,34 +101,11 @@ import Layout from '../layouts/Layout.astro';
 
       <!-- Commission Info -->
       <div class="mt-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-8">
-        <h2 class="text-2xl font-semibold mb-6">Special Orders</h2>
+        <h2 class="text-2xl font-semibold mb-6">{about.commissionTitle}</h2>
         <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
-          <div>
-            <p class="text-gray-700 dark:text-gray-300 mb-4">
-              Need a big skeleton or beastman army for your next funnel? Running a convension 1-shot and want to impress the crowd? I offer bundle deals!  
-            </p>
-            <p>
-              <a href="/contact" >
-             <u>Get in Touch</u> 
-            </a> for more info!
-            </p>
+          <div class="text-gray-700 dark:text-gray-300 leading-relaxed">
+            <div set:html={formatContent(about.commissionContent)} />
           </div>
-          <!--<div>
-            <h3 class="text-lg font-medium mb-4">Commission Types:</h3>
-            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-              <li>• Single character pieces</li>
-              <li>• Squad/unit painting</li>
-              <li>• Army painting projects</li>
-              <li>• Custom color schemes</li>
-              <li>• Competition-level showcase pieces</li>
-            </ul>
-            <a 
-              href="/contact" 
-              class="inline-block mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Get in Touch
-            </a>
-          </div> -->
         </div>
       </div>
 

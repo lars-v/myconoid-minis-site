@@ -1,0 +1,18 @@
+{
+  "pageTitle": "About the Dragon Guy",
+  "profileImage": "/images/minis/IMG_4260.png",
+  "profileImageAlt": "Nerd at work",
+  "bioTitle": "My Journey",
+  "bioContent": "Welcome, traveler! I'm myconoid (aka Lars), and I like making miniature monsters for my tabletop games. What started as a hobby has grown into a pursuit of bringing tiny baddies to life for others!\n\nI specialize in creating grim-looking baddies for old school role-playing (OSR) and other games.\n\nWhen I'm not making your favorite antagonists, you can find me riding motorbikes, digging in the garden and playing with my dog.",
+  "approachTitle": "My Approach",
+  "approachContent": "I like to keep things simple around here. You instantly know OSR-style artwork by its bold black and white \"color\" scheme. My minis take this into 3 dimensions with matte black priming and simple dry brushing to bring details out.\n\nYou can keep it real and play with them as is (and as Crom intended), or slap on some speedpaint to make them fancy.",
+  "toolsTitle": "Tools of the Trade",
+  "equipmentList": [
+    { "item": "Elegoo Saturn 4 Ultra x2" },
+    { "item": "ABS-Like Photopolymer Resin" },
+    { "item": "Elegoo Wash and Cure Station" },
+    { "item": "Airbrushed polyurethane primer" }
+  ],
+  "commissionTitle": "Special Orders", 
+  "commissionContent": "Need a big skeleton or beastman army for your next funnel? Running a convention 1-shot and want to impress the crowd? I offer bundle deals!\n\n[Get in Touch](/contact) for more info!"
+}
