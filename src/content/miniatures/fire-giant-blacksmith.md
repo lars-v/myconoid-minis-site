@@ -1,0 +1,27 @@
+---
+title: "Fire Giant Blacksmith"
+description: "Master crafters and organized warriors, fire giants dwell among volcanoes, lava floes, and rocky mountains. They are ruthless militaristic brutes whose mastery of metalwork is legendary. Fire Giant"
+scale: "Huge"
+creatureType: "Giant"
+designer: "Yasashii Kyojin Studio"
+photos:
+  - image: "https://dl2.myminifactory.com/object-assets/63bb7a9b81134/images/720X720-firegiant-02-ps.jpg"
+    caption: "Fire Giant Blacksmith - Image 1"
+  - image: "https://dl2.myminifactory.com/object-assets/63bb7a9b81134/images/720X720-fire-giant-02-c.jpg"
+    caption: "Fire Giant Blacksmith - Image 2"
+  - image: "https://dl2.myminifactory.com/object-assets/63bb7a9b81134/images/720X720-fire-giant-02-a.jpg"
+    caption: "Fire Giant Blacksmith - Image 3"
+  - image: "https://dl2.myminifactory.com/object-assets/63bb7a9b81134/images/720X720-fire-giant-02-scale.jpg"
+    caption: "Fire Giant Blacksmith - Image 4"
+pricing:
+  osrPriming:
+    tabletop: 25
+    display: 45
+  unprimed:
+    tabletop: 22
+    display: 40
+featured: false
+forSale: false
+---
+
+Master crafters and organized warriors, fire giants dwell among volcanoes, lava floes, and rocky mountains. They are ruthless militaristic brutes whose mastery of metalwork is legendary. Fire Giant

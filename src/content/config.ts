@@ -6,7 +6,7 @@ const miniaturesCollection = defineCollection({
     // Basic Info
     title: z.string().optional(), // Name
     description: z.string().optional(),
-    scale: z.enum(['32mm', '54mm', 'Other']).optional(),
+    scale: z.enum(["Small", "Medium", "Large", "Huge", "Gargantuan", "Other"]).optional(),
     creatureType: z.enum([
       'Hero',
       'Undead',
@@ -21,6 +21,13 @@ const miniaturesCollection = defineCollection({
       'Giant',
       'Humanoid',
       'Aberration',
+      'Fiend',
+      'Animated',
+      'Fey',
+      'Prop and Scatter',
+      'Celestial',
+      'Plant',
+      'Ooze',
       'Other'
     ]).optional(),
     

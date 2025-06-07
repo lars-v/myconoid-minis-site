@@ -40,7 +40,7 @@ collections:
         name: "scale"
         widget: "select"
         required: false
-        options: ["32mm", "54mm", "Other"]
+        options: ["Small", "Medium", "Large", "Huge", "Gargantuan", "Other"]
       
       - label: "Creature Type"
         name: "creatureType"
@@ -60,6 +60,8 @@ collections:
           - "Giant"
           - "Humanoid"
           - "Aberration"
+          - "Fiend"
+          - "Ooze"
           - "Other"
       
       # Photos

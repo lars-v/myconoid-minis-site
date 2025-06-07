@@ -27,5 +27,6 @@ pnpm-debug.log*
 public/csv-import.html
 
 web-scraper.astro
+studio-crawler.html
 
 pnpm-lock.yaml
